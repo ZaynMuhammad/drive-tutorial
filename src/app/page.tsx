@@ -1,13 +1,10 @@
-import Link from "next/link";
+import GoogleDriveClone from "../GoogleDriveClone"
 
-export default function HomePage() {
+export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
-      <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16">
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
-          <h1>Hello Everynyan</h1>
-        </div>
-      </div>
+    <main className="flex min-h-screen flex-col items-center justify-between p-24 bg-gray-900">
+      <GoogleDriveClone />
     </main>
-  );
+  )
 }
+
