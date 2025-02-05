@@ -2,12 +2,14 @@
 
 import type React from "react"
 import { useState } from "react"
-import { type FileItem, initialData } from "./mockData"
+import { type FileItem, type Folder, mockFiles, mockFolders } from "./mockData"
 import { FolderIcon, FileIcon, UploadIcon } from "lucide-react"
 import { Button } from "~/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "~/components/ui/table"
 
-const FileTableItem: React.FC<{ item: FileItem; onNavigate: (item: FileItem) => void }> = ({ item, onNavigate }) => {
+type Item = FileItem | Folder
+
+const FileTableItem: React.FC<{ item: Item; onNavigate: (item: Folder) => void }> = ({ item, onNavigate }) => {
   const handleClick = () => {
     if (item.type === "folder") {
       onNavigate(item)
@@ -24,7 +26,7 @@ const FileTableItem: React.FC<{ item: FileItem; onNavigate: (item: FileItem) => 
             <FileIcon className="w-5 h-5 mr-2 text-gray-500" />
           )}
           {item.type === "file" ? (
-            <a href={`#file-${item.id}`} className="text-blue-400 hover:underline">
+            <a href={item.url} className="text-blue-400 hover:underline">
               {item.name}
             </a>
           ) : (
@@ -33,63 +35,50 @@ const FileTableItem: React.FC<{ item: FileItem; onNavigate: (item: FileItem) => 
         </div>
       </TableCell>
       <TableCell>{item.type.charAt(0).toUpperCase() + item.type.slice(1)}</TableCell>
-      <TableCell>{item.size ?? "-"}</TableCell>
+      <TableCell>{item.type === "file" ? item.size : "-"}</TableCell>
     </TableRow>
   )
 }
 
 const GoogleDriveClone: React.FC = () => {
-  const [data, setData] = useState<FileItem[]>(initialData)
-  const [currentPath, setCurrentPath] = useState<FileItem[]>([])
+  const [currentFolder, setCurrentFolder] = useState<Folder>(mockFolders.find((f) => f.id === "root")!)
+  const [breadcrumbs, setBreadcrumbs] = useState<Folder[]>([currentFolder])
 
-  const handleUpload = () => {
-    const newFile: FileItem = {
-      id: `${Date.now()}`,
-      name: `New File ${data.length + 1}.txt`,
-      type: "file",
-      size: "10 KB",
-    }
-    setData([...data, newFile])
+  const getCurrentFolderContents = () => {
+    const folders = mockFolders.filter((folder) => folder.parent === currentFolder.id)
+    const files = mockFiles.filter((file) => file.parent === currentFolder.id)
+    return [...folders, ...files]
   }
 
-  const handleNavigate = (item: FileItem) => {
-    if (item.type === "folder") {
-      setCurrentPath([...currentPath, item])
+  const handleNavigate = (folder: Folder) => {
+    setCurrentFolder(folder)
+    if (breadcrumbs[breadcrumbs.length - 1].id !== folder.id) {
+      setBreadcrumbs([...breadcrumbs, folder])
     }
   }
 
   const handleBreadcrumbClick = (index: number) => {
-    setCurrentPath(currentPath.slice(0, index + 1))
+    const newBreadcrumbs = breadcrumbs.slice(0, index + 1)
+    setBreadcrumbs(newBreadcrumbs)
+    setCurrentFolder(newBreadcrumbs[newBreadcrumbs.length - 1])
   }
 
-  const currentFolder = currentPath.length > 0 ? currentPath[currentPath.length - 1] : { children: data ?? [] }
+  const handleUpload = () => {
+    // Implement file upload logic here
+    console.log("File upload clicked")
+  }
 
   return (
     <div className="container mx-auto p-4 text-gray-300">
       <div className="flex justify-between items-center mb-4">
         <nav className="flex text-sm" aria-label="Breadcrumb">
           <ol className="inline-flex items-center space-x-1 md:space-x-3">
-            <li className="inline-flex items-center">
-              <a
-                href="#"
-                onClick={() => setCurrentPath([])}
-                className="inline-flex items-center text-blue-400 hover:text-blue-600"
-              >
-                Home
-              </a>
-            </li>
-            {currentPath.map((item, index) => (
-              <li key={item.id}>
-                <div className="flex items-center">
-                  <span className="text-gray-500 mx-2">/</span>
-                  <a
-                    href="#"
-                    onClick={() => handleBreadcrumbClick(index)}
-                    className="text-blue-400 hover:text-blue-600"
-                  >
-                    {item.name}
-                  </a>
-                </div>
+            {breadcrumbs.map((folder, index) => (
+              <li key={folder.id} className="inline-flex items-center">
+                {index > 0 && <span className="text-gray-500 mx-2">/</span>}
+                <a href="#" onClick={() => handleBreadcrumbClick(index)} className="text-blue-400 hover:text-blue-600">
+                  {folder.name}
+                </a>
               </li>
             ))}
           </ol>
@@ -109,15 +98,13 @@ const GoogleDriveClone: React.FC = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {currentFolder ? (
-              currentFolder.children?.map((item) => (
-                <FileTableItem key={item.id} item={item} onNavigate={handleNavigate} />
-              ))
-            ) : (
-              <tr>
-                <td colSpan={3}>No folder selected</td>
-              </tr>
-            )}
+            {getCurrentFolderContents().map((item) => (
+              <FileTableItem
+                key={item.id}
+                item={item}
+                onNavigate={item.type === "folder" ? handleNavigate : () => {}}
+              />
+            ))}
           </TableBody>
         </Table>
       </div>
