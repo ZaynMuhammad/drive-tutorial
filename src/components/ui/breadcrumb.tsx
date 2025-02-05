@@ -6,10 +6,6 @@ export interface BreadcrumbProps extends React.ComponentPropsWithoutRef<"nav"> {
   separator?: React.ReactNode
 }
 
-export interface BreadcrumbItemProps extends React.ComponentPropsWithoutRef<"li"> {}
-
-export interface BreadcrumbLinkProps extends React.ComponentPropsWithoutRef<"a"> {}
-
 const Breadcrumb = React.forwardRef<HTMLElement, BreadcrumbProps>(({ ...props }, ref) => {
   return <nav ref={ref} aria-label="breadcrumb" {...props} />
 })
@@ -31,12 +27,12 @@ const BreadcrumbList = React.forwardRef<HTMLOListElement, React.ComponentPropsWi
 )
 BreadcrumbList.displayName = "BreadcrumbList"
 
-const BreadcrumbItem = React.forwardRef<HTMLLIElement, BreadcrumbItemProps>(({ className, ...props }, ref) => {
+const BreadcrumbItem = React.forwardRef<HTMLLIElement, React.ComponentPropsWithoutRef<"li">>(({ className, ...props }, ref) => {
   return <li ref={ref} className={cn("inline-flex items-center gap-1.5", className)} {...props} />
 })
 BreadcrumbItem.displayName = "BreadcrumbItem"
 
-const BreadcrumbLink = React.forwardRef<HTMLAnchorElement, BreadcrumbLinkProps>(({ className, ...props }, ref) => {
+const BreadcrumbLink = React.forwardRef<HTMLAnchorElement, React.ComponentPropsWithoutRef<"a">>(({ className, ...props }, ref) => {
   return <a ref={ref} className={cn("transition-colors hover:text-foreground", className)} {...props} />
 })
 BreadcrumbLink.displayName = "BreadcrumbLink"

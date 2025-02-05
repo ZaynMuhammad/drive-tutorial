@@ -33,7 +33,7 @@ const FileTableItem: React.FC<{ item: FileItem; onNavigate: (item: FileItem) => 
         </div>
       </TableCell>
       <TableCell>{item.type.charAt(0).toUpperCase() + item.type.slice(1)}</TableCell>
-      <TableCell>{item.size || "-"}</TableCell>
+      <TableCell>{item.size ?? "-"}</TableCell>
     </TableRow>
   )
 }
@@ -62,7 +62,7 @@ const GoogleDriveClone: React.FC = () => {
     setCurrentPath(currentPath.slice(0, index + 1))
   }
 
-  const currentFolder = currentPath.length > 0 ? currentPath[currentPath.length - 1] : { children: data }
+  const currentFolder = currentPath.length > 0 ? currentPath[currentPath.length - 1] : { children: data ?? [] }
 
   return (
     <div className="container mx-auto p-4 text-gray-300">
@@ -109,9 +109,15 @@ const GoogleDriveClone: React.FC = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {currentFolder.children?.map((item) => (
-              <FileTableItem key={item.id} item={item} onNavigate={handleNavigate} />
-            ))}
+            {currentFolder ? (
+              currentFolder.children?.map((item) => (
+                <FileTableItem key={item.id} item={item} onNavigate={handleNavigate} />
+              ))
+            ) : (
+              <tr>
+                <td colSpan={3}>No folder selected</td>
+              </tr>
+            )}
           </TableBody>
         </Table>
       </div>
