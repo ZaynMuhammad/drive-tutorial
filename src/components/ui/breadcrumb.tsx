@@ -2,6 +2,7 @@ import * as React from "react"
 import { ChevronRightIcon } from "lucide-react"
 import { cn } from "~/lib/utils"
 
+// This file isn't being used rn, maybe incorporate it into GoogleDriveClone or remove it.
 export interface BreadcrumbProps extends React.ComponentPropsWithoutRef<"nav"> {
   separator?: React.ReactNode
 }
