@@ -3,42 +3,13 @@
 import type React from "react"
 import { useState } from "react"
 import { type FileItem, type Folder, mockFiles, mockFolders } from "./mockData"
-import { FolderIcon, FileIcon, UploadIcon } from "lucide-react"
+import { UploadIcon } from "lucide-react"
 import { Button } from "~/components/ui/button"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "~/components/ui/table"
+import { Table, TableBody, TableHead, TableHeader, TableRow } from "~/components/ui/table"
+
+import FileTableItem from "./components/ui/FileTableItem"
 
 type Item = FileItem | Folder
-
-const FileTableItem: React.FC<{ item: Item; onNavigate: (item: Folder) => void }> = ({ item, onNavigate }) => {
-  const handleClick = () => {
-    if (item.type === "folder") {
-      onNavigate(item)
-    }
-  }
-
-  return (
-    <TableRow className="hover:bg-gray-800 cursor-pointer" onClick={handleClick}>
-      <TableCell className="font-medium">
-        <div className="flex items-center">
-          {item.type === "folder" ? (
-            <FolderIcon className="w-5 h-5 mr-2 text-blue-500" />
-          ) : (
-            <FileIcon className="w-5 h-5 mr-2 text-gray-500" />
-          )}
-          {item.type === "file" ? (
-            <a href={item.url} className="text-blue-400 hover:underline">
-              {item.name}
-            </a>
-          ) : (
-            <span className="text-gray-300">{item.name}</span>
-          )}
-        </div>
-      </TableCell>
-      <TableCell>{item.type.charAt(0).toUpperCase() + item.type.slice(1)}</TableCell>
-      <TableCell>{item.type === "file" ? item.size : "-"}</TableCell>
-    </TableRow>
-  )
-}
 
 const GoogleDriveClone: React.FC = () => {
   const [currentFolder, setCurrentFolder] = useState<Folder>(mockFolders.find((f) => f.id === "root")!)
@@ -50,10 +21,14 @@ const GoogleDriveClone: React.FC = () => {
     return [...folders, ...files]
   }
 
-  const handleNavigate = (folder: Folder) => {
-    setCurrentFolder(folder)
-    if (breadcrumbs[breadcrumbs.length - 1].id !== folder.id) {
-      setBreadcrumbs([...breadcrumbs, folder])
+  const handleNavigate = (item: Item) => {
+    if (item.type === "file") {
+      return;
+    }
+
+    setCurrentFolder(item)
+    if (breadcrumbs[breadcrumbs.length - 1].id !== item.id) {
+      setBreadcrumbs([...breadcrumbs, item])
     }
   }
 
@@ -102,7 +77,7 @@ const GoogleDriveClone: React.FC = () => {
               <FileTableItem
                 key={item.id}
                 item={item}
-                onNavigate={item.type === "folder" ? handleNavigate : () => {}}
+                onNavigate={() => handleNavigate(item)}
               />
             ))}
           </TableBody>
