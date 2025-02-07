@@ -1,4 +1,4 @@
-export interface FileItem {
+export interface File {
   id: string;
   name: string;
   type: "file";
@@ -22,7 +22,7 @@ export const mockFolders: Folder[] = [
   { id: "4", name: "Presentations", type: "folder", parent: "3" },
 ];
 
-export const mockFiles: FileItem[] = [
+export const mockFiles: File[] = [
   {
     id: "4",
     name: "Resume.pdf",

@@ -2,40 +2,26 @@
 
 import type React from "react"
 import { useState } from "react"
-import { type FileItem, type Folder, mockFiles, mockFolders } from "./mockData"
+import { mockFiles, mockFolders } from "./mockData"
 import { UploadIcon } from "lucide-react"
 import { Button } from "~/components/ui/button"
 import { Table, TableBody, TableHead, TableHeader, TableRow } from "~/components/ui/table"
 
-import FileTableItem from "./components/ui/FileTableItem"
-
-type Item = FileItem | Folder
+import { FileTableItem, FolderTableItem } from "./app/FileTableItem"
 
 const GoogleDriveClone: React.FC = () => {
-  const [currentFolder, setCurrentFolder] = useState<Folder>(mockFolders.find((f) => f.id === "root")!)
-  const [breadcrumbs, setBreadcrumbs] = useState<Folder[]>([currentFolder])
+  const [currentFolder, setCurrentFolder] = useState<string>("root")
 
   const getCurrentFolderContents = () => {
-    const folders = mockFolders.filter((folder) => folder.parent === currentFolder.id)
-    const files = mockFiles.filter((file) => file.parent === currentFolder.id)
-    return [...folders, ...files]
+    return mockFolders.filter((folder) => folder.parent === currentFolder)
   }
 
-  const handleNavigate = (item: Item) => {
-    if (item.type === "file") {
-      return;
-    }
-
-    setCurrentFolder(item)
-    if (breadcrumbs[breadcrumbs.length - 1].id !== item.id) {
-      setBreadcrumbs([...breadcrumbs, item])
-    }
+  const getCurrentFile = () => {
+    return mockFiles.filter((file) => file.parent === currentFolder)
   }
 
-  const handleBreadcrumbClick = (index: number) => {
-    const newBreadcrumbs = breadcrumbs.slice(0, index + 1)
-    setBreadcrumbs(newBreadcrumbs)
-    setCurrentFolder(newBreadcrumbs[newBreadcrumbs.length - 1])
+  const handleFolderClick = (folderId: string) => {
+    setCurrentFolder(folderId)
   }
 
   const handleUpload = () => {
@@ -43,15 +29,38 @@ const GoogleDriveClone: React.FC = () => {
     console.log("File upload clicked")
   }
 
+  const breadcrumbs = () => {
+    const breadcrumbs = []
+    let currentId = currentFolder
+
+    while (currentId !== "root") {
+      const folder = mockFolders.find((folder) => folder.id === currentId)
+
+      if (folder) {
+        breadcrumbs.unshift(folder)
+        currentId = folder.parent ?? "root"
+      } else {
+        break;
+      }
+    }
+
+    return breadcrumbs
+  }
+
   return (
     <div className="container mx-auto p-4 text-gray-300">
       <div className="flex justify-between items-center mb-4">
         <nav className="flex text-sm" aria-label="Breadcrumb">
-          <ol className="inline-flex items-center space-x-1 md:space-x-3">
-            {breadcrumbs.map((folder, index) => (
+          <ol className="inline-flex items-center space-x-1">
+              <li className="inline-flex items-center m-0">
+                <a href="#" onClick={() => setCurrentFolder("root")} className="text-blue-400 hover:text-blue-600">
+                  My Drive
+                </a>
+            </li>
+            {breadcrumbs().map((folder, index) => (
               <li key={folder.id} className="inline-flex items-center">
-                {index > 0 && <span className="text-gray-500 mx-2">/</span>}
-                <a href="#" onClick={() => handleBreadcrumbClick(index)} className="text-blue-400 hover:text-blue-600">
+                <span className="text-gray-500 mx-2">/</span>
+                <a href="#" onClick={() => setCurrentFolder(folder.id)} className="text-blue-400 hover:text-blue-600">
                   {folder.name}
                 </a>
               </li>
@@ -73,11 +82,17 @@ const GoogleDriveClone: React.FC = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {getCurrentFolderContents().map((item) => (
+          {getCurrentFolderContents().map((folder) => (
+              <FolderTableItem
+                key={folder.id}
+                folder={folder}
+                onNavigate={() => handleFolderClick(folder.id)}
+              />
+            ))}
+            {getCurrentFile().map((file) => (
               <FileTableItem
-                key={item.id}
-                item={item}
-                onNavigate={() => handleNavigate(item)}
+                key={file.id}
+                file={file}
               />
             ))}
           </TableBody>
