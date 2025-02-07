@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { mockFiles, mockFolders } from "./mockData"
 import { UploadIcon } from "lucide-react"
 import { Button } from "~/components/ui/button"
@@ -29,7 +29,7 @@ const GoogleDriveClone: React.FC = () => {
     console.log("File upload clicked")
   }
 
-  const breadcrumbs = () => {
+  const breadcrumbs = useMemo(() => {
     const breadcrumbs = []
     let currentId = currentFolder
 
@@ -45,7 +45,7 @@ const GoogleDriveClone: React.FC = () => {
     }
 
     return breadcrumbs
-  }
+  }, [currentFolder])
 
   return (
     <div className="container mx-auto p-4 text-gray-300">
