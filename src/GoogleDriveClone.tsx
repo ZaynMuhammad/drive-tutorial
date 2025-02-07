@@ -6,6 +6,7 @@ import { mockFiles, mockFolders } from "./mockData"
 import { UploadIcon } from "lucide-react"
 import { Button } from "~/components/ui/button"
 import { Table, TableBody, TableHead, TableHeader, TableRow } from "~/components/ui/table"
+import { type Folder, type File } from "./mockData"
 
 import { FileTableItem, FolderTableItem } from "./app/FileTableItem"
 
@@ -57,7 +58,7 @@ const GoogleDriveClone: React.FC = () => {
                   My Drive
                 </a>
             </li>
-            {breadcrumbs().map((folder, index) => (
+            {breadcrumbs.map((folder: Folder) => (
               <li key={folder.id} className="inline-flex items-center">
                 <span className="text-gray-500 mx-2">/</span>
                 <a href="#" onClick={() => setCurrentFolder(folder.id)} className="text-blue-400 hover:text-blue-600">
