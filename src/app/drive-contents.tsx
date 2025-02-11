@@ -2,26 +2,20 @@
 
 import type React from "react"
 import { useMemo, useState } from "react"
-import { mockFiles, mockFolders } from "./mockData"
 import { UploadIcon } from "lucide-react"
 import { Button } from "~/components/ui/button"
 import { Table, TableBody, TableHead, TableHeader, TableRow } from "~/components/ui/table"
-import { type Folder, type File } from "./mockData"
+import type { files, folders } from "~/server/db/schema";
 
-import { FileTableItem, FolderTableItem } from "./app/FileTableItem"
+import { FileTableItem, FolderTableItem } from "./FileTableItem"
 
-const GoogleDriveClone: React.FC = () => {
-  const [currentFolder, setCurrentFolder] = useState<string>("root")
+const DriveContents: React.FC<{
+    files: typeof files.$inferSelect[];
+    folders: typeof folders.$inferSelect[];
+}> = (props) => {
+  const [currentFolder, setCurrentFolder] = useState<number>(1);
 
-  const getCurrentFolderContents = () => {
-    return mockFolders.filter((folder) => folder.parent === currentFolder)
-  }
-
-  const getCurrentFile = () => {
-    return mockFiles.filter((file) => file.parent === currentFolder)
-  }
-
-  const handleFolderClick = (folderId: string) => {
+  const handleFolderClick = (folderId: number) => {
     setCurrentFolder(folderId)
   }
 
@@ -34,19 +28,19 @@ const GoogleDriveClone: React.FC = () => {
     const breadcrumbs = []
     let currentId = currentFolder
 
-    while (currentId !== "root") {
-      const folder = mockFolders.find((folder) => folder.id === currentId)
+    while (currentId !== 1) {
+      const folder = props.folders.find((folder) => folder.id === currentId)
 
       if (folder) {
         breadcrumbs.unshift(folder)
-        currentId = folder.parent ?? "root"
+        currentId = folder.parent ?? 1
       } else {
         break;
       }
     }
 
     return breadcrumbs
-  }, [currentFolder])
+  }, [currentFolder, props.folders])
 
   return (
     <div className="container mx-auto p-4 text-gray-300">
@@ -54,11 +48,11 @@ const GoogleDriveClone: React.FC = () => {
         <nav className="flex text-sm" aria-label="Breadcrumb">
           <ol className="inline-flex items-center space-x-1">
               <li className="inline-flex items-center m-0">
-                <a href="#" onClick={() => setCurrentFolder("root")} className="text-blue-400 hover:text-blue-600">
+                <a href="#" onClick={() => setCurrentFolder(1)} className="text-blue-400 hover:text-blue-600">
                   My Drive
                 </a>
             </li>
-            {breadcrumbs.map((folder: Folder) => (
+            {breadcrumbs.map((folder) => (
               <li key={folder.id} className="inline-flex items-center">
                 <span className="text-gray-500 mx-2">/</span>
                 <a href="#" onClick={() => setCurrentFolder(folder.id)} className="text-blue-400 hover:text-blue-600">
@@ -83,14 +77,15 @@ const GoogleDriveClone: React.FC = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-          {getCurrentFolderContents().map((folder) => (
+          {props.folders.map((folder) => (
+
               <FolderTableItem
                 key={folder.id}
                 folder={folder}
                 onNavigate={() => handleFolderClick(folder.id)}
               />
             ))}
-            {getCurrentFile().map((file) => (
+            {props.files.map((file) => (
               <FileTableItem
                 key={file.id}
                 file={file}
@@ -103,5 +98,5 @@ const GoogleDriveClone: React.FC = () => {
   )
 }
 
-export default GoogleDriveClone
+export default DriveContents
 

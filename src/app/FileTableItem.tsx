@@ -1,10 +1,11 @@
 import type React from "react"
 
-import { type File, type Folder } from "~/mockData";
+import { type Folder } from "~/mockData";
 import { TableCell, TableRow } from "~/components/ui/table";
 import { FolderIcon, FileIcon } from "lucide-react";
+import type { files, folders } from "~/server/db/schema";
 
-const FileTableItem: React.FC<{ file: File; }> = ({ file }) => {
+const FileTableItem: React.FC<{ file: (typeof files.$inferSelect); }> = ({ file }) => {
     return (
         <TableRow className="hover:bg-gray-800 cursor-pointer">
           <TableCell className="font-medium">
@@ -15,13 +16,13 @@ const FileTableItem: React.FC<{ file: File; }> = ({ file }) => {
                 </a>
             </div>
           </TableCell>
-          <TableCell>{file.type.charAt(0).toUpperCase() + file.type.slice(1)}</TableCell>
+          <TableCell>{"File"}</TableCell>
           <TableCell>{file.size}</TableCell>
         </TableRow>
       ) 
 }
 
-const FolderTableItem: React.FC<{ folder: Folder; onNavigate: () => void }> = ({ folder, onNavigate }) => {
+const FolderTableItem: React.FC<{ folder: (typeof folders.$inferSelect); onNavigate: () => void }> = ({ folder, onNavigate }) => {
   return (
     <TableRow className="hover:bg-gray-800 cursor-pointer" onClick={onNavigate}>
       <TableCell className="font-medium">
@@ -30,7 +31,8 @@ const FolderTableItem: React.FC<{ folder: Folder; onNavigate: () => void }> = ({
             <span className="text-gray-300">{folder.name}</span>
         </div>
       </TableCell>
-      <TableCell>{folder.type.charAt(0).toUpperCase() + folder.type.slice(1)}</TableCell>
+      <TableCell></TableCell>
+      <TableCell></TableCell>
     </TableRow>
   ) 
 } 
