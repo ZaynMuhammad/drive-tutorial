@@ -1,7 +1,7 @@
 export interface File {
   id: string;
   name: string;
-  type: "file";
+  type: string;
   url: string;
   parent: string;
   size: string;
