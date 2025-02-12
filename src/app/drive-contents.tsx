@@ -2,6 +2,8 @@
 
 import type React from "react"
 import { useMemo, useState } from "react"
+import Link from "next/link"
+
 import { UploadIcon } from "lucide-react"
 import { Button } from "~/components/ui/button"
 import { Table, TableBody, TableHead, TableHeader, TableRow } from "~/components/ui/table"
@@ -15,32 +17,12 @@ const DriveContents: React.FC<{
 }> = (props) => {
   const [currentFolder, setCurrentFolder] = useState<number>(1);
 
-  const handleFolderClick = (folderId: number) => {
-    setCurrentFolder(folderId)
-  }
-
   const handleUpload = () => {
     // Implement file upload logic here
     console.log("File upload clicked")
   }
 
-  const breadcrumbs = useMemo(() => {
-    const breadcrumbs = []
-    let currentId = currentFolder
-
-    while (currentId !== 1) {
-      const folder = props.folders.find((folder) => folder.id === currentId)
-
-      if (folder) {
-        breadcrumbs.unshift(folder)
-        currentId = folder.parent ?? 1
-      } else {
-        break;
-      }
-    }
-
-    return breadcrumbs
-  }, [currentFolder, props.folders])
+  const breadcrumbs: unknown = []; 
 
   return (
     <div className="container mx-auto p-4 text-gray-300">
@@ -48,16 +30,16 @@ const DriveContents: React.FC<{
         <nav className="flex text-sm" aria-label="Breadcrumb">
           <ol className="inline-flex items-center space-x-1">
               <li className="inline-flex items-center m-0">
-                <a href="#" onClick={() => setCurrentFolder(1)} className="text-blue-400 hover:text-blue-600">
+                <Link href="/f/1" className="text-blue-400 hover:text-blue-600">
                   My Drive
-                </a>
+                </Link>
             </li>
             {breadcrumbs.map((folder) => (
               <li key={folder.id} className="inline-flex items-center">
                 <span className="text-gray-500 mx-2">/</span>
-                <a href="#" onClick={() => setCurrentFolder(folder.id)} className="text-blue-400 hover:text-blue-600">
+                <Link href={`/f/${folder.id}`} className="text-blue-400 hover:text-blue-600">
                   {folder.name}
-                </a>
+                </Link>
               </li>
             ))}
           </ol>
@@ -78,11 +60,9 @@ const DriveContents: React.FC<{
           </TableHeader>
           <TableBody>
           {props.folders.map((folder) => (
-
               <FolderTableItem
                 key={folder.id}
                 folder={folder}
-                onNavigate={() => handleFolderClick(folder.id)}
               />
             ))}
             {props.files.map((file) => (
