@@ -14,6 +14,7 @@ import { FileTableItem, FolderTableItem } from "./FileTableItem"
 const DriveContents: React.FC<{
     files: typeof files.$inferSelect[];
     folders: typeof folders.$inferSelect[];
+    parents: typeof folders.$inferSelect[];
 }> = (props) => {
   const [currentFolder, setCurrentFolder] = useState<number>(1);
 
@@ -34,7 +35,7 @@ const DriveContents: React.FC<{
                   My Drive
                 </Link>
             </li>
-            {breadcrumbs.map((folder) => (
+            {props.parents.map((folder) => (
               <li key={folder.id} className="inline-flex items-center">
                 <span className="text-gray-500 mx-2">/</span>
                 <Link href={`/f/${folder.id}`} className="text-blue-400 hover:text-blue-600">
