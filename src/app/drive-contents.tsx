@@ -7,14 +7,14 @@ import Link from "next/link"
 import { UploadIcon } from "lucide-react"
 import { Button } from "~/components/ui/button"
 import { Table, TableBody, TableHead, TableHeader, TableRow } from "~/components/ui/table"
-import type { files, folders } from "~/server/db/schema";
+import type { files_table, folders_table } from "~/server/db/schema";
 
 import { FileTableItem, FolderTableItem } from "./FileTableItem"
 
 const DriveContents: React.FC<{
-    files: typeof files.$inferSelect[];
-    folders: typeof folders.$inferSelect[];
-    parents: typeof folders.$inferSelect[];
+    files: typeof files_table.$inferSelect[];
+    folders: typeof folders_table.$inferSelect[];
+    parents: typeof folders_table.$inferSelect[];
 }> = (props) => {
   const [currentFolder, setCurrentFolder] = useState<number>(1);
 

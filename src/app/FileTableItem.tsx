@@ -4,9 +4,9 @@ import Link from "next/link"
 
 import { TableCell, TableRow } from "~/components/ui/table";
 import { FolderIcon, FileIcon } from "lucide-react";
-import type { files, folders } from "~/server/db/schema";
+import type { files_table, folders_table } from "~/server/db/schema";
 
-const FileTableItem: React.FC<{ file: (typeof files.$inferSelect); }> = ({ file }) => {
+const FileTableItem: React.FC<{ file: (typeof files_table.$inferSelect); }> = ({ file }) => {
   const linkRef = useRef<HTMLAnchorElement>(null);
 
   const handleRowClick = (event: React.MouseEvent<HTMLTableRowElement>) => {
@@ -31,7 +31,7 @@ const FileTableItem: React.FC<{ file: (typeof files.$inferSelect); }> = ({ file 
       ) 
 }
 
-const FolderTableItem: React.FC<{ folder: (typeof folders.$inferSelect); }> = ({ folder  }) => {
+const FolderTableItem: React.FC<{ folder: (typeof folders_table.$inferSelect); }> = ({ folder  }) => {
 
   return (
     <TableRow className="hover:bg-gray-800 cursor-pointer">
