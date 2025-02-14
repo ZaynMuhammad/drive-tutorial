@@ -1,8 +1,9 @@
 "use client"
 
 import type React from "react"
-import { useMemo, useState } from "react"
+import { useState } from "react"
 import Link from "next/link"
+import { SignedIn, SignInButton, SignedOut, UserButton } from "@clerk/nextjs"
 
 import { UploadIcon } from "lucide-react"
 import { Button } from "~/components/ui/button"
@@ -22,8 +23,6 @@ const DriveContents: React.FC<{
     // Implement file upload logic here
     console.log("File upload clicked")
   }
-
-  const breadcrumbs: unknown = []; 
 
   return (
     <div className="container mx-auto p-4 text-gray-300">
@@ -45,10 +44,14 @@ const DriveContents: React.FC<{
             ))}
           </ol>
         </nav>
-        <Button onClick={handleUpload} className="flex items-center">
-          <UploadIcon className="w-4 h-4 mr-2" />
-          Upload File
-        </Button>
+          <div>
+            <SignedOut>
+              <SignInButton />
+            </SignedOut>
+            <SignedIn>
+              <UserButton />
+            </SignedIn>
+          </div>
       </div>
       <div className="border border-gray-700 rounded-lg overflow-hidden">
         <Table>
