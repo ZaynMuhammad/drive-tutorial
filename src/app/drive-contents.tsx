@@ -1,29 +1,22 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
 import Link from "next/link"
 import { SignedIn, SignInButton, SignedOut, UserButton } from "@clerk/nextjs"
 
-import { UploadIcon } from "lucide-react"
-import { Button } from "~/components/ui/button"
 import { Table, TableBody, TableHead, TableHeader, TableRow } from "~/components/ui/table"
 import type { files_table, folders_table } from "~/server/db/schema";
 
 import { FileTableItem, FolderTableItem } from "./FileTableItem"
+import { UploadButton } from "~/components/ui/uploadthing"
+import { useRouter } from "next/navigation"
 
 const DriveContents: React.FC<{
     files: typeof files_table.$inferSelect[];
     folders: typeof folders_table.$inferSelect[];
     parents: typeof folders_table.$inferSelect[];
 }> = (props) => {
-  const [currentFolder, setCurrentFolder] = useState<number>(1);
-
-  const handleUpload = () => {
-    // Implement file upload logic here
-    console.log("File upload clicked")
-  }
-
+  const navigate = useRouter();
   return (
     <div className="container mx-auto p-4 text-gray-300">
       <div className="flex justify-between items-center mb-4">
@@ -78,6 +71,7 @@ const DriveContents: React.FC<{
           </TableBody>
         </Table>
       </div>
+        <UploadButton endpoint={"imageUploader"} onClientUploadComplete={() => navigate.refresh()} />
     </div>
   )
 }
