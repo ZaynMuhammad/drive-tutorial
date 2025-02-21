@@ -4,8 +4,6 @@ import { db } from "~/server/db";
 import {
   files_table as filesSchema,
   folders_table as foldersSchema,
-  DB_FileType,
-  DB_FolderType,
 } from "~/server/db/schema";
 import { eq } from "drizzle-orm";
 
@@ -14,13 +12,15 @@ export const QUERIES = {
     return db
       .select()
       .from(foldersSchema)
-      .where(eq(foldersSchema.parent, folderId));
+      .where(eq(foldersSchema.parent, folderId))
+      .orderBy(foldersSchema.id);
   },
   getFiles: function (folderId: number) {
     return db
       .select()
       .from(filesSchema)
-      .where(eq(filesSchema.parent, folderId));
+      .where(eq(filesSchema.parent, folderId))
+      .orderBy(filesSchema.id);
   },
   getAllParentsForFolder: async function (folderId: number) {
     const parents = [];
