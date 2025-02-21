@@ -5,7 +5,7 @@ import {
   files_table as filesSchema,
   folders_table as foldersSchema,
   DB_FileType,
-  DB_FolderType
+  DB_FolderType,
 } from "~/server/db/schema";
 import { eq } from "drizzle-orm";
 
@@ -39,21 +39,30 @@ export const QUERIES = {
     }
     return parents;
   },
+  getFolderById: async function (folderId: number) {
+    const folder = await db
+      .select()
+      .from(foldersSchema)
+      .where(eq(foldersSchema.id, folderId));
+
+    return folder[0];
+  },
 };
 
 export const MUTATIONS = {
-  createFile: async function(input: {
-    file : {
+  createFile: async function (input: {
+    file: {
       name: string;
       size: number;
       url: string;
       parent: number;
+      ownerId: string;
     };
     userId: string;
   }) {
-        return await db.insert(filesSchema).values({
-          ...input.file,
-        parent: input.file.parent,
-      });
-  }
-}
+    return await db.insert(filesSchema).values({
+      ...input.file,
+      ownerId: input.userId,
+    });
+  },
+};
