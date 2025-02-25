@@ -1,16 +1,12 @@
 # Drive Tutorial
 
-## TODO
+## TODO 2025-02-25:
 
-- [ ] Set up database and data model
-- [ ] Move folder open state to URL
-- [ ] Add auth
-- [ ] Add file upload
+[ ] - Folder deletion
+[ ] - Folder creation
+[ ] - Fix upload button to show spinner and fix styling
+[ ] - Create option to switch folders to a dropdown
+[ ] - Different themes
+[ ] - Slugify the folder names
+[ ] - Switch to BetterAuth?
 
-## Note from 2-05-2025
-
-Connected database, next steps:
-- [ ] Update schema to show files and folders
-- [ ] Manually insert examples
-- [ ] Render them in the UI
-- [ ] Push and make sure it all runs
