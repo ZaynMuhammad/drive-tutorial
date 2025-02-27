@@ -77,6 +77,18 @@ export const MUTATIONS = {
     });
   },
 
+  createFolder: async function (input: {
+    folder: {
+      name: string;
+      parent: number;
+      ownerId: string;
+    };
+  }) {
+    return await db.insert(foldersSchema).values({
+      ...input.folder,
+    });
+  },
+
   onboardUser: async function (userId: string) {
     // TODO: Add check here to make sure root folder doesn't already exist. Also to this in a transaction.
     const rootFolder = await db

@@ -16,6 +16,9 @@ import type { files_table, folders_table } from "~/server/db/schema";
 import { FileTableItem, FolderTableItem } from "./FileTableItem";
 import { UploadButton } from "~/components/ui/uploadthing";
 import { useRouter } from "next/navigation";
+import { Button } from "~/components/ui/button";
+import { useState } from "react";
+import Modal from "~/components/ui/modal";
 
 const DriveContents: React.FC<{
   files: (typeof files_table.$inferSelect)[];
@@ -23,7 +26,9 @@ const DriveContents: React.FC<{
   parents: (typeof folders_table.$inferSelect)[];
   currentFolderId: number;
 }> = (props) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useRouter();
+
   return (
     <div className="container mx-auto p-4 text-gray-300">
       <div className="mb-4 flex items-center justify-between">
@@ -80,6 +85,20 @@ const DriveContents: React.FC<{
         onClientUploadComplete={() => navigate.refresh()}
         input={{ folderId: props.currentFolderId }}
       />
+      <div className="flex items-center justify-center">
+        <Button onClick={() => setIsModalOpen(true)} className="my-4">
+          Create Folder
+        </Button>
+      </div>
+      <Modal
+        isOpen={isModalOpen}
+        setIsOpen={setIsModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title="Create New Folder"
+        currentFolderId={props.currentFolderId}
+      >
+        Create a new folder
+      </Modal>
     </div>
   );
 };
