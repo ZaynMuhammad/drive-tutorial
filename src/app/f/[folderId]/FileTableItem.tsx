@@ -6,7 +6,7 @@ import { TableCell, TableRow } from "~/components/ui/table";
 import { FolderIcon, FileIcon, Trash2 } from "lucide-react";
 import type { files_table, folders_table } from "~/server/db/schema";
 import { Button } from "~/components/ui/button";
-import { deleteFile } from "~/server/actions";
+import { deleteFile, deleteFolder } from "~/server/actions";
 
 const FileTableItem: React.FC<{ file: typeof files_table.$inferSelect }> = ({
   file,
@@ -76,7 +76,14 @@ const FolderTableItem: React.FC<{
       </TableCell>
       <TableCell></TableCell>
       <TableCell></TableCell>
-      <TableCell></TableCell>
+      <TableCell>
+        {/* <Button
+          onClick={() => deleteFolder(folder.id)}
+          aria-label="Delete folder"
+        >
+          <Trash2 />
+        </Button> */}
+      </TableCell>
     </TableRow>
   );
 };

@@ -92,7 +92,7 @@ export async function deleteFolder(folderId: number) {
     return { error: "Folder not found" };
   }
 
-  // delete all sub files and folders
+  // delete all sub files in current dir
   const subFiles = await db
     .delete(files_table)
     .where(eq(files_table.parent, folderId));
